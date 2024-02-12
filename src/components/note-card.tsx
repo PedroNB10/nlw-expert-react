@@ -1,22 +1,63 @@
-export function NoteCard() {
-  return (
-    <button className="text-left rounded-md bg-slate-800 p-5 space-y-3 overflow-hidden relative hover:ring-2 hover:ring-slate-600 focus-visible:ring-2 focus-visible:ring-lime-400 outline-none">
-      <span className="text-sm font-medium text-slate-300">há 4 dias</span>
-      <p className="text-sm leading-6 text-slate-400">
-        Grave uma nota em áudio que será convertida em texto automaticamente.
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Blanditiis,
-        repellendus voluptate beatae aliquid magni ratione a vitae, debitis
-        architecto quod repellat autem illo nulla voluptates ullam ipsam
-        possimus error sint harum consequatur rerum! Nesciunt culpa laboriosam
-        ratione rerum dolore consectetur, accusantium sequi doloribus aliquid
-        voluptatum id tempora, tempore illum! Voluptas perspiciatis et ipsa sunt
-        obcaecati, assumenda, pariatur suscipit voluptatibus inventore, fugit
-        quasi praesentium. Sunt, porro impedit quas deleniti eos doloribus
-        dolorem vero, doloremque quam corporis quisquam, odio aperiam animi fuga
-        aut magni dignissimos ea facilis eius ab cumque? Itaque, mollitia?
-      </p>
+import * as Dialog from '@radix-ui/react-dialog';
 
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-black/0 h-1/2 pointer-events-none" />
-    </button>
+import { formatDistanceToNow } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
+import { X } from 'lucide-react'
+
+// Aqui ao importar toda a biblioteca do radix foi usado o asterisco e para qualquer elemento precisa usar o Dialog. antes do nome do componente.
+
+
+interface NoteCardProps {
+  note: {
+    date: Date;
+    content: string;
+  }
+}
+
+export function NoteCard(props: NoteCardProps) {
+  return (
+    <Dialog.Root>
+      <Dialog.Trigger className="text-left flex flex-col gap-3 rounded-md bg-slate-800 p-5  overflow-hidden relative hover:ring-2 hover:ring-slate-600 focus-visible:ring-2 focus-visible:ring-lime-400 outline-none">
+        <span className="text-sm font-medium text-slate-300">{formatDistanceToNow(props.note.date.toISOString(), { locale: ptBR, addSuffix: true })}</span>
+        <p className="text-sm leading-6 text-slate-400">
+          {props.note.content}
+        </p>
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-black/0 h-1/2 pointer-events-none" />
+      </Dialog.Trigger>
+
+      <Dialog.Portal> {/* Esse é o portal que aparece ao clicar no Dialog.Trigger e fica fora desse elemento Notecard mas dentro do body*/}
+        <Dialog.Overlay className="inset-0 fixed  bg-black/50" />
+        {/* fixed left-1/2 top-1/2 w-[300px] h-[200px] bg-white */}
+        <Dialog.Content className='overflow-hidden fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[640px] w-full outline-none
+        h-[60vh] bg-slate-700 rounded-md flex flex-col '> {/* Esse é o conteúdo que aparece ao clicar no Dialog.Trigger*/}
+          {/* flex-1: ocupa o máximo de espaço possível mas se tiver outros elementos ele se ajusta com base no seu irmão e o 0% é o tamanho padrão */}
+
+          <Dialog.Close className='absolute right-0 top-0 bg-slate-800 p-1.5 text-slate-400'>
+            <X className='size-5 text-slate-400 hover:text-slate-100' />
+          </Dialog.Close>
+
+          <div className='flex flex-1 flex-col gap-3 p-5'>
+            <span className="text-sm font-medium text-slate-300">{formatDistanceToNow(props.note.date.toISOString(), { locale: ptBR, addSuffix: true })}</span>
+            <p className="text-sm leading-6 ">
+              {props.note.content}
+            </p>
+
+          </div>
+
+
+          <button
+            type='button'
+            className='w-full bg-slate-800 py-4 text-center text-sm text-slate-300 outline-none font-medium group'
+          >
+
+            Deseja <span className='text-red-400 group-hover:underline'>apagar essa nota?</span>
+
+          </button>
+        </Dialog.Content>
+      </Dialog.Portal>
+
+    </Dialog.Root>
+
+
   );
 }

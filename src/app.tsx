@@ -2,7 +2,15 @@ import logo from "./assets/logo-nlw-expert.svg";
 import { NewNoteCard } from "./components/new-note-card";
 import { NoteCard } from "./components/note-card";
 
+
+
 export function App() {
+
+  const newNote = {
+    date: new Date(),
+    content: "Lembrar de Ligar para Mãe Hoje."
+  };
+
   return (
     <div className="mx-auto max-w-6xl my-12 space-y-6">
       <img src={logo} alt="nlw expert" />
@@ -19,9 +27,7 @@ export function App() {
 
       <div className="grid grid-cols-3 auto-rows-[250px] gap-6">
         <NewNoteCard />
-        <NoteCard />
-        <NoteCard />
-        <NoteCard />
+        <NoteCard note={newNote} />
       </div>
     </div>
   );
